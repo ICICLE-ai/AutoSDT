@@ -5,9 +5,6 @@ Scaling Data-Driven Discovery Tasks Toward Open Co-Scientists.
 ## Project Description
 AutoSDT is an automatic pipeline for collecting high-quality coding tasks from real-world, data-driven scientific discovery workflows. It uses large language models (LLMs) to search repositories, identify ecologically valid scientific tasks, and synthesize executable task instructions and solutions.
 
-## Tags
-- Foundation Models
-
 <p align="center">
 [<a href="https://osu-nlp-group.github.io/AutoSDT/">Website</a>] •
 [<a href="https://arxiv.org/abs/2506.08140">Paper</a>] •
@@ -42,38 +39,48 @@ Despite long-standing efforts in accelerating scientific discovery with AI, buil
 
 ## Installation
 Clone this repository and install the required packages:
-
+```
 git clone https://github.com/OSU-NLP-Group/AutoSDT
 cd AutoSDT
 pip install -r requirements.txt
+```
 
 ## AutoSDT Pipeline
 ### Configure Azure endpoint and API key
+```
 vim ~/.bashrc
 export AZURE_OPENAI_KEY=YOUR_AZURE_API_KEY
 export AZURE_ENDPOINT=YOUR_AZURE_ENDPOINT
 export AZURE_API_VERSION=YOUR_AZURE_API_VERSION
 source ~/.bashrc
+```
 
 ### AutoSDT-Search: Search for research related repositories
+```
 cd autosdt/scripts
 bash run_search.sh
+```
 
 Specify discipline keywords in the `base_keywords` argument.
 
 ### AutoSDT-Select: Crawl python files, verify tasks, and prepare workspaces
+```
 bash run_crawl_files.sh
 bash run_scientific_task_verify.sh
 bash run_locate_dependencies.sh
 bash run_prepare_env.sh
+```
 
 ### AutoSDT-Adapt: Adapt programs and generate task instructions
+```
 bash run_adapt_code.sh
 bash run_generate_instruction.sh
+```
 
 After the above steps, you should obtain a `final_combined_training_data.jsonl` containing generated instructions and code. Then run:
-
+```
 python convert_data_to_alpaca_format.py
+```
 
 ## Tutorials
 ### Quickstart Tutorial
@@ -124,12 +131,14 @@ We use the [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) library for
 For ScienceAgentBench, follow its original repository instructions.
 
 For DiscoveryBench, first start an LLM engine at localhost using [vllm](https://docs.vllm.ai/en/latest/), then run:
-
+```
 python evaluate_with_llm_engine.py
+```
 
 Then compute final metrics:
-
+```
 python cal_eval_avg.py
+```
 
 ## References
 - AutoSDT Project Website: https://osu-nlp-group.github.io/AutoSDT/
