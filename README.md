@@ -1,166 +1,145 @@
 # AutoSDT
-This is the official codebase of AutoSDT:
-Scaling Data-Driven Discovery Tasks Toward Open Co-Scientists.
+
+## Project Information
+
+**Project Name:** AutoSDT  
+**Tags:** Foundation-AI  
+**License:** MIT  
+
+AutoSDT is an automated pipeline for constructing data-driven scientific discovery coding tasks from real-world repositories. It serves as a scalable foundation for training and evaluating AI co-scientists in computational science domains.
 
 <p align="center">
-[<a href="https://osu-nlp-group.github.io/AutoSDT/">Website</a>] •
-[<a href="https://arxiv.org/abs/2506.08140">Paper</a>] •
-[<a href="https://huggingface.co/datasets/osunlp/AutoSDT-5K">Dataset</a>] •
-[<a href="https://x.com/YifeiLiPKU/status/1932962920134046022">Twitter</a>]
+[Website](https://osu-nlp-group.github.io/AutoSDT/) •
+[Paper](https://arxiv.org/abs/2506.08140) •
+[Dataset](https://huggingface.co/datasets/osunlp/AutoSDT-5K)
 </p>
 
-<br>
+---
 
-Our AutoSDT collects data-driven discovery tasks in three steps: (1) **AutoSDT-Search** generates a list of keywords for each discipline and searches for relevant repositories. (2) **AutoSDT-Select** identifies programs that represent data-driven discovery tasks and extracts their execution dependency folders. (3) **AutoSDT-Adapt** modifies the selected programs to be independently executable and generates their corresponding task instructions.
-<div align="center">
-  <img src="figures/AutoSDT_github.svg" width="95%" title="Introduction Figure">
-</div>
+# Explanation
 
+## Why AutoSDT?
 
-We fine-tune Qwen2.5-Coder-32B on AutoSDT-5K to get AutoSDT-Coder-32B, which surpasses the performance of GPT-4o (2024-05-13) on ScienceAgentBench.
-<div align="center">
-  <img src="figures/AutoSDT-Fig1.png" width="75%" title="Figure1">
-</div>
+Building reliable AI co-scientists requires high-quality, ecologically valid training tasks. Existing benchmarks are limited in scale and diversity.
 
-## Table-of-Contents
-- [📌 Overview](#overview)
-- [⚙️ Installation](#installation)
-- [🚀 AutoSDT-Pipeline](#AutoSDT-Pipeline)
-- [🛠️ Training and Inference](#training-and-inference)
-- [📧 Contact](#contact)
-- [📄 Disclaimer](#disclaimer)
-- [📜 License](#license)
-- [📖 Citation](#citation)
+AutoSDT addresses this by automatically mining, adapting, and packaging scientific workflows from real-world repositories into executable coding tasks.
 
-## Overview
-Despite long-standing efforts in accelerating scientific discovery with AI, building reliable AI co-scientists remains challenging due to the lack of high-quality data for training and evaluation. To address this data scarcity problem, we introduce AutoSDT—an automatic pipeline that collects high-quality coding tasks from real-world data-driven discovery workflows.
+## System Architecture
 
-AutoSDT leverages the coding capabilities and parametric knowledge of large language models (LLMs) to search from diverse sources, identify ecologically valid scientific tasks, and synthesize both task instructions and code solutions automatically. Using this pipeline, we construct AutoSDT-5K, a dataset of 5,404 scientific coding tasks spanning four scientific disciplines (bioinformatics, computational chemistry, geographical information science, and psychology and cognitive neuroscience) and using 756 unique Python packages.
-- To the best of our knowledge, AutoSDT-5K is the largest and the only automatically collected open dataset for data-driven scientific discovery so far.
-- After fine-tuning Qwen2.5-Coder-32B-Instruct on AutoSDT-5K, the model reaches GPT-4o-level performance on ScienceAgentBench with a success rate of 7.8%, **doubling** the performance of its base model.
-- It also improves the hypothesis matching score by 17.4% relatively on DiscoveryBench, narrowing the gap between open-weight models and proprietary ones.
+AutoSDT consists of three modules:
 
-## Installation
-Clone this repository and install the required packages:
-```python
+1. **AutoSDT-Search**
+2. **AutoSDT-Select**
+3. **AutoSDT-Adapt**
+
+These modules collectively generate AutoSDT-5K, a dataset of 5,404 scientific coding tasks across four disciplines.
+
+---
+
+# Tutorials
+
+## Quick Start
+
+### Installation
+
+```bash
 git clone https://github.com/OSU-NLP-Group/AutoSDT
 cd AutoSDT
 pip install -r requirements.txt
-```
 
-## **AutoSDT Pipeline**
-### Configure Azure endpoint and API key
-```python
-vim ~/.bashrc
+Configure Azure Endpoint
+
 export AZURE_OPENAI_KEY=YOUR_AZURE_API_KEY
 export AZURE_ENDPOINT=YOUR_AZURE_ENDPOINT
 export AZURE_API_VERSION=YOUR_AZURE_API_VERSION
-source ~/.bashrc
-```
 
-### AutoSDT-Search: Search for research related repositories
+Run the Full Pipeline
 
-```python
 cd autosdt/scripts
 bash run_search.sh
-```
-And specify discipline keywords in `base_keywords` argument.
-### AutoSDT-Select: Crawl python files, verify that they represent data-driven scientific tasks, and prepare their workspaces
-```python
 bash run_crawl_files.sh
 bash run_scientific_task_verify.sh
 bash run_locate_dependencies.sh
 bash run_prepare_env.sh
-```
-
-### AutoSDT-Adapt: Adapt program for standalone executability and generate task instruction
-```python
 bash run_adapt_code.sh
 bash run_generate_instruction.sh
-```
 
-After the above steps, you should obtain a `final_combined_training_data.jsonl` containing the generated instructions and code. After that, run
-```python
+Convert output:
+
 python convert_data_to_alpaca_format.py
-```
-to convert the data format into alpaca training format.
 
-## Training and Inference
-### Supervised Fine-tuning
-We use the [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) library to conduct SFT experiments. We provide the `.yaml` files in the `models/` folder in this repo:
 
-```python
--- qwen2.5-coder-7b-instruct_full_sft.yaml
--- qwen2.5-coder-7b-instruct_full_sft.yaml
--- qwen2.5-coder-7b-instruct_full_sft.yaml
-```
-Please refer to [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) for more details.
+⸻
 
-### Inference and Evaluation
-For ScienceAgentBench, we directly follow the original repo for running inference and evaluation. Please refer to `ScienceAgentBench/README.md` for more information.
+How-To Guides
 
-For DiscoveryBench, first start an LLM engine at localhost using [vllm](https://docs.vllm.ai/en/latest/), then run
-```python
+How to Add a New Discipline
+	1.	Modify base_keywords in search config.
+	2.	Update discipline-specific filters.
+	3.	Re-run AutoSDT-Search and downstream modules.
+
+How to Fine-Tune Models
+
+We use LLaMA-Factory￼.
+
+YAML configs are in models/.
+
+How to Evaluate on DiscoveryBench
+
 python evaluate_with_llm_engine.py
-```
-to generate all the evaluation results, and run
-```python
 python cal_eval_avg.py
-```
-to compute the final results.
-
-## Contact
-[Yifei Li](mailto:li.14042@osu.edu), [Hanane Nour Moussa](mailto:moussa.45@osu.edu), [Huan Sun](mailto:sun.397@osu.edu), The Ohio State University
-
-## Disclaimer
-
-AutoSDT creates tasks based on open-source code and data, and we respect the creators' ownership and intellectual property. We have made our best effort to ensure that the repositories included in AutoSDT-5K have permissive licenses allowing for academic use. We provide more details in Appendix G in the paper. We welcome requests from the original authors to modify or remove relevant tasks related to their repositories if needed.
-
-We ensure that all 1325 repositories composing the final tasks in AutoSDT-5K allow for academic use. We list the licenses and the number of corresponding repositories in the following table:
-
-| **License**      | **Repositories** |
-|------------------|------------------|
-| MIT              | 449              |
-| GNU              | 247              |
-| Apache           | 145              |
-| BSD              | 84               |
-| CC               | 57               |
-| Boost            | 4                |
-| Public Domain    | 3                |
-| ISC              | 1                |
-| Eclipse          | 1                |
-| PolyForm         | 1                |
-| Mulan            | 1                |
-| Other (Custom)           | 15               |
-
-We manually checked the remaining 15 repositories with custom licenses and ensured that they all allow academic and non-commercial use:
 
 
-| **Repositories with Custom Licenses**                           |
-|--------------------------------------------|
-| GabrieleLozupone/AXIAL                     |
-| fhalab/MLDE                                |
-| snacktavish/TreeToReads                    |
-| usnistgov/SDNist                           |
-| ruppinlab/CSI-Microbes-identification      |
-| fenchri/edge-oriented-graph                |
-| SNU-LIST/QSMnet                            |
-| Ramprasad-Group/polygnn                    |
-| gdalessi/OpenMORe                          |
-| svalkiers/clusTCR                          |
-| AI-sandbox/SALAI-Net                       |
-| pixelite1201/agora_evaluation              |
-| jsunn-y/PolymerGasMembraneML               |
-| spectrochempy/spectrochempy                |
-| usnistgov/atomgpt                          |
+⸻
 
-There are also 317 repositories without any license information. We assume that these repositories are permissive for academic purposes.
+Reference
 
-## License
+Dataset Statistics
+	•	5,404 tasks
+	•	4 scientific disciplines
+	•	756 unique Python packages
 
-Code under this repo is licensed under MIT License.
+External Links
+	•	ScienceAgentBench
+	•	DiscoveryBench
+	•	LLaMA-Factory
+	•	vLLM
 
-## Citation
+Command Reference
+
+Script	Purpose
+run_search.sh	Repository search
+run_crawl_files.sh	Crawl python files
+run_adapt_code.sh	Adapt program
+
+
+⸻
+
+Issue Reporting
+
+Please open a GitHub Issue and provide:
+	•	Environment details
+	•	Error logs
+	•	Minimal reproducible example
+
+Contact:
+Yifei Li (li.14042@osu.edu)
+
+⸻
+
+Acknowledgements
+
+This work is supported in part by the National Science Foundation (NSF) AI Institute for Intelligent Cyberinfrastructure with Computational Learning in the Environment (ICICLE), award OAC 2112606.
+
+⸻
+
+License
+
+This project is licensed under the MIT License.
+
+⸻
+
+Citation
 Please cite our paper (and star our repo!) if you use our data, models, or code.
 
 ```bibtex
@@ -173,3 +152,8 @@ Please cite our paper (and star our repo!) if you use our data, models, or code.
       primaryClass={cs.LG},
       url={https://arxiv.org/abs/2506.08140}, 
 }
+```
+
+## Acknowledgements
+
+This work is supported in part by the National Science Foundation (NSF) funded AI Institute for Intelligent Cyberinfrastructure with Computational Learning in the Environment (ICICLE) under award OAC 2112606.
