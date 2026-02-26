@@ -174,21 +174,6 @@ Note: If your GitHub repository metadata currently shows GPL-3.0 while this READ
 
 ## Citation
 Please cite our paper (and star our repo) if you use our data, models, or code.
-
-@misc{li2025autosdtscalingdatadrivendiscovery,
-      title={AutoSDT: Scaling Data-Driven Discovery Tasks Toward Open Co-Scientists},
-      author={Yifei Li and Hanane Nour Moussa and Ziru Chen and Shijie Chen and Botao Yu and Mingyi Xue and Benjamin Burns and Tzu-Yao Chiu and Vishal Dey and Zitong Lu and Chen Wei and Qianheng Zhang and Tianyu Zhang and Song Gao and Xuhui Huang and Xia Ning and Nesreen K. Ahmed and Ali Payani and Huan Sun},
-      year={2025},
-      eprint={2506.08140},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG},
-      url={https://arxiv.org/abs/2506.08140}
-}
-
-
-Citation
-Please cite our paper (and star our repo!) if you use our data, models, or code.
-
 ```bibtex
 @misc{li2025autosdtscalingdatadrivendiscovery,
       title={AutoSDT: Scaling Data-Driven Discovery Tasks Toward Open Co-Scientists}, 
